@@ -1,9 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const GameControls = ({ playing, frameCount, handleToggle }) => (
+import SpeedSlider from './SpeedSlider';
+
+const GameControls = ({
+  playing, score, gameSpeed, updateGameSpeed, togglePlay,
+}) => (
   <div>
-    <button onClick={() => handleToggle()}>{playing ? 'PAUSE' : 'START'}</button>
-    <div>FRAME_NUMBER: {frameCount}</div>
+    <span>SCORE: {Math.floor(score)}</span>
+    <button onClick={() => togglePlay()}>{playing ? 'PAUSE' : 'PLAY'}</button>
+    <SpeedSlider gameSpeed={gameSpeed} updateGameSpeed={updateGameSpeed} />
   </div>
 );
 export default GameControls;
+
+GameControls.propTypes = {
+  playing: PropTypes.bool.isRequired,
+  score: PropTypes.number.isRequired,
+  gameSpeed: PropTypes.number.isRequired,
+  updateGameSpeed: PropTypes.func.isRequired,
+  togglePlay: PropTypes.func.isRequired,
+};

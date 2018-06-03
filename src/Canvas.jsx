@@ -1,22 +1,31 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import Dot from './Dot';
 import { GAME_DIMENSIONS } from './constants';
+import Dot from './Dot';
 
 const viewBox = [0, 0, ...GAME_DIMENSIONS];
 // TODO: won't maintain ratio at very narrow resolutions
-const Canvas = ({ dots }) => {
-  const renderedDots = Object.entries(dots).map(([id, data]) => <Dot key={id} {...data} />);
-  return (
-    <Container>
-      <Svg viewBox={viewBox} preserveAspectRatio="none">
-        {renderedDots}
-      </Svg>
-    </Container>
-  );
-};
+const Canvas = ({ dots, handleDotClick }) => (
+  <Container>
+    <StyledSvg viewBox={viewBox} preserveAspectRatio="none">
+      {Object.entries(dots).map(([id, data]) => (
+        <Dot key={id} id={id} {...data} handleClick={handleDotClick} />
+      ))}
+    </StyledSvg>
+  </Container>
+);
 export default Canvas;
+
+Canvas.propTypes = {
+  dots: PropTypes.objectOf(PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    diam: PropTypes.number.isRequired,
+  })).isRequired,
+  handleDotClick: PropTypes.func.isRequired,
+};
 
 const Container = styled.div`
   display: flex;
@@ -26,7 +35,7 @@ const Container = styled.div`
   background: blue;
 `;
 // TODO: TRY TO INHERIT 100% HEIGHT
-const Svg = styled.svg`
+const StyledSvg = styled.svg`
   height: 90vh;
   width: auto;
   outline: 1px solid black;
