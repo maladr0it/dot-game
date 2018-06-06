@@ -1,4 +1,6 @@
 import { GAME_DIMENSIONS, FRAMES_PER_SECOND } from './constants';
+import { minSpeed, maxSpeed } from './config';
+import { interpolateColors } from './utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -38,19 +40,26 @@ const reducer = (state, action) => {
       }
       const { id } = action;
       // TODO: dangerous selector
-      const { reward } = state.dots[id];
+      const reward = Math.round(state.dots[id].reward);
       const newState = { ...state };
       delete newState.dots[id];
       return {
         ...state,
         score: state.score + reward,
+        lastReward: { id, reward },
       };
     }
     case 'GAME_SPEED_UPDATED': {
       const { speed } = action;
+      const backgroundColor = interpolateColors(
+        '#3A506B',
+        '#0B132B',
+        (speed - minSpeed) / (maxSpeed - minSpeed),
+      );
       return {
         ...state,
         gameSpeed: speed,
+        backgroundColor,
       };
     }
     case 'GAME_STARTED': {

@@ -1,26 +1,36 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
-import reducer from './reducer';
-import GameControls from './GameControls';
-import Canvas from './Canvas';
-
+import reducer from '../reducer';
+import { FRAMES_PER_SECOND, GAME_DIMENSIONS } from '../constants';
 import {
-  FRAMES_PER_SECOND,
-  GAME_DIMENSIONS,
+  initialSpeed,
+  minSpeed,
+  maxSpeed,
+  dotsPerSecond,
   minDiam,
   maxDiam,
   minReward,
   maxReward,
-} from './constants';
-import { randomRange } from './utils';
+} from '../config';
+import { randomRange, interpolateColors } from '../utils';
+
+import GameControls from './GameControls';
+import Canvas from './Canvas';
+import RewardDisplay from './RewardDisplay';
 
 class App extends Component {
   state = {
     playing: false,
     score: 0,
     dots: {},
-    gameSpeed: 70,
+    gameSpeed: initialSpeed,
+    lastReward: {},
+    backgroundColor: interpolateColors(
+      '#3A506B',
+      '#0B132B',
+      (initialSpeed - minSpeed) / (maxSpeed - minSpeed),
+    ),
   };
   frameCount = 0;
   gameInterval = null; // reference for clearInterval()
@@ -72,7 +82,7 @@ class App extends Component {
   // core game-loop is here
   updateGame = () => {
     this.dispatch({ type: 'ADVANCE_DOTS' });
-    if (this.frameCount % FRAMES_PER_SECOND === 0) {
+    if ((this.frameCount * dotsPerSecond) % FRAMES_PER_SECOND === 0) {
       this.addDot();
     }
     this.frameCount += 1;
@@ -80,7 +90,6 @@ class App extends Component {
   render() {
     return (
       <Container>
-        <button onClick={() => console.log(this.state)}>PEEK_STATE</button>
         <GameControls
           playing={this.state.playing}
           score={this.state.score}
@@ -88,7 +97,12 @@ class App extends Component {
           updateGameSpeed={this.updateGameSpeed}
           togglePlay={this.togglePlay}
         />
-        <Canvas dots={this.state.dots} handleDotClick={this.captureDot} />
+        <RewardDisplay {...this.state.lastReward} />
+        <Canvas
+          dots={this.state.dots}
+          handleDotClick={this.captureDot}
+          backgroundColor={this.state.backgroundColor}
+        />
       </Container>
     );
   }
@@ -96,9 +110,5 @@ class App extends Component {
 export default App;
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: red;
   height: 100%;
 `;
