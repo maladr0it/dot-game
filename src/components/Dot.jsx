@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 
+import Theme from '../theme';
+
 const Dot = ({
   id, x, y, diam, handleClick, backgroundColor,
 }) => (
@@ -10,6 +12,7 @@ const Dot = ({
     cy={y}
     r={diam / 2}
     onMouseDown={() => handleClick(id)}
+    onTouchStart={() => handleClick(id)}
     backgroundColor={backgroundColor}
   />
 );
@@ -17,10 +20,10 @@ export default Dot;
 
 const pulse = keyframes`
   0% {
-    stroke: #ADF7B6;
+    stroke: ${Theme.pastelGreen};
   }
   100% {
-    stroke: #FFEE93;
+    stroke: ${Theme.pastelYellow};
   }
 `;
 const StyledCircle = styled.circle.attrs({

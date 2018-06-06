@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
+import Theme from '../theme';
 
 class RewardDisplay extends React.Component {
   // only update if a new dot has been captured
@@ -7,6 +10,7 @@ class RewardDisplay extends React.Component {
     return this.props.id !== nextProps.id;
   }
   // using a ref to imperatively animate the component
+  // NOTE: animate() is CHROME ONLY FEATURE NOW
   componentDidUpdate() {
     this.textEl.animate(
       [
@@ -41,6 +45,14 @@ class RewardDisplay extends React.Component {
 }
 export default RewardDisplay;
 
+RewardDisplay.propTypes = {
+  id: PropTypes.string,
+  reward: PropTypes.number,
+};
+RewardDisplay.defaultProps = {
+  id: null,
+  reward: 0,
+};
 const Container = styled.div`
   pointer-events: none;
   z-index: 10;
@@ -53,5 +65,5 @@ const StyledText = styled.div`
   text-align: center;
   left: -50%;
   font-size: 3rem;
-  color: #ffee93;
+  color: ${Theme.pastelYellow};
 `;

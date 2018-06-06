@@ -2,26 +2,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import Theme from '../theme';
 import SpeedSlider from './SpeedSlider';
 
-const GameControls = ({
-  playing, score, gameSpeed, updateGameSpeed, togglePlay,
-}) => (
-  <React.Fragment>
-    <TransparentOverlay />
-    <Overlay>
-      <Controls>
-        <ScorePane>
-          <Score>{score}</Score>
-          <StartButton playing={playing} onClick={() => togglePlay()}>
-            {playing ? 'Pause' : 'Play'}
-          </StartButton>
-        </ScorePane>
-        <SpeedSlider gameSpeed={gameSpeed} updateGameSpeed={updateGameSpeed} />
-      </Controls>
-    </Overlay>
-  </React.Fragment>
-);
+class GameControls extends React.PureComponent {
+  render() {
+    const {
+      playing, score, gameSpeed, updateGameSpeed, togglePlay,
+    } = this.props;
+    return (
+      <React.Fragment>
+        <TransparentOverlay />
+        <Overlay>
+          <Controls>
+            <ScorePane>
+              <Score>{score}</Score>
+              <StartButton playing={playing} onClick={() => togglePlay()}>
+                {playing ? 'Pause' : 'Play'}
+              </StartButton>
+            </ScorePane>
+            <SpeedSlider gameSpeed={gameSpeed} updateGameSpeed={updateGameSpeed} />
+          </Controls>
+        </Overlay>
+      </React.Fragment>
+    );
+  }
+}
 export default GameControls;
 
 GameControls.propTypes = {
@@ -62,7 +68,7 @@ const ScorePane = styled.div`
 `;
 const Score = styled.div`
   font-size: 3rem;
-  color: #ffee93;
+  color: ${Theme.pastelYellow};
   width: 8rem;
 `;
 const StartButton = styled.button`
@@ -75,6 +81,6 @@ const StartButton = styled.button`
   padding: 10px;
   border-radius: 2px;
   background: none;
-  outline: 2px solid ${props => (props.playing ? '#ffee93' : '#adf7b6')};
-  color: ${props => (props.playing ? '#ffee93' : '#adf7b6')};
+  outline: 2px solid ${props => (props.playing ? Theme.pastelYellow : Theme.pastelGreen)};
+  color: ${props => (props.playing ? Theme.pastelYellow : Theme.pastelGreen)};
 `;

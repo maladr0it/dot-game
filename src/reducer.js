@@ -1,6 +1,7 @@
-import { GAME_DIMENSIONS, FRAMES_PER_SECOND } from './constants';
+import { GAME_DIMENSIONS } from './constants';
 import { minSpeed, maxSpeed } from './config';
 import { interpolateColors } from './utils';
+import Theme from './theme';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -15,8 +16,10 @@ const reducer = (state, action) => {
       };
     }
     case 'ADVANCE_DOTS': {
+      const { delta } = action;
       const { dots, gameSpeed } = state;
-      const delta = gameSpeed / FRAMES_PER_SECOND;
+      const dy = gameSpeed * delta;
+      // const dy = gameSpeed / FRAMES_PER_SECOND;
       const newDots = Object.entries(dots).reduce((acc, [id, data]) => {
         // don't render a dot if it is beyond the game dimensions
         if (data.y > GAME_DIMENSIONS[1] + data.diam) {
@@ -24,7 +27,7 @@ const reducer = (state, action) => {
         }
         acc[id] = {
           ...data,
-          y: data.y + delta,
+          y: data.y + dy,
         };
         return acc;
       }, {});
@@ -39,7 +42,7 @@ const reducer = (state, action) => {
         return state;
       }
       const { id } = action;
-      // TODO: dangerous selector
+      // TODO: potentially dangerous selector
       const reward = Math.round(state.dots[id].reward);
       const newState = { ...state };
       delete newState.dots[id];
@@ -52,8 +55,8 @@ const reducer = (state, action) => {
     case 'GAME_SPEED_UPDATED': {
       const { speed } = action;
       const backgroundColor = interpolateColors(
-        '#3A506B',
-        '#0B132B',
+        Theme.slateGray,
+        Theme.deepNavy,
         (speed - minSpeed) / (maxSpeed - minSpeed),
       );
       return {

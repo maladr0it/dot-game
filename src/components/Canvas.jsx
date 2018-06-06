@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { GAME_DIMENSIONS } from '../constants';
+import Theme from '../theme';
 import Dot from './Dot';
 
 const viewBox = [0, 0, ...GAME_DIMENSIONS];
@@ -45,6 +46,6 @@ const StyledSvg = styled.svg.attrs({
   }),
 })`
   height: 100%;
-  outline: 1px solid #ffee93;
+  outline: 1px solid ${Theme.pastelYellow}
   width: auto;
 `;

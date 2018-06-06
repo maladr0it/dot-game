@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { minSpeed, maxSpeed } from '../config';
+import Theme from '../theme';
 
 const SpeedSlider = ({ gameSpeed, updateGameSpeed }) => (
   <Container>
@@ -27,7 +28,7 @@ const Container = styled.div`
   width: 100%;
 `;
 const StyledLabel = styled.label`
-  color: #ffee93;
+  color: ${Theme.pastelYellow};
 `;
 const StyledSlider = styled.input`
   -webkit-appearance: none;
@@ -43,7 +44,7 @@ const StyledSlider = styled.input`
     user-select: none;
     width: 100%;
     height: 0.1rem;
-    background: #ffee93;
+    background: ${Theme.pastelGreen};
   }
   &[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -53,7 +54,7 @@ const StyledSlider = styled.input`
     cursor: pointer;
     position: relative;
     border-radius: 2px;
-    background: #adf7b6;
-    border: 1px solid #0b132b;
+    background: ${Theme.pastelGreen};
+    border: 1px solid ${Theme.deepNavy};
   }
 `;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import reducer from '../reducer';
-import { FRAMES_PER_SECOND, GAME_DIMENSIONS } from '../constants';
+import { GAME_DIMENSIONS } from '../constants';
 import {
   initialSpeed,
   minSpeed,
@@ -14,6 +14,7 @@ import {
   maxReward,
 } from '../config';
 import { randomRange, interpolateColors } from '../utils';
+import Theme from '../theme';
 
 import GameControls from './GameControls';
 import Canvas from './Canvas';
@@ -27,19 +28,23 @@ class App extends Component {
     gameSpeed: initialSpeed,
     lastReward: {},
     backgroundColor: interpolateColors(
-      '#3A506B',
-      '#0B132B',
+      Theme.slateGray,
+      Theme.deepNavy,
       (initialSpeed - minSpeed) / (maxSpeed - minSpeed),
     ),
   };
-  frameCount = 0;
-  gameInterval = null; // reference for clearInterval()
-  globalId = 0; // uuid generator could be used instead
+
+  frameId = null;
+  currentTime = null;
+  lastTime = null;
+  delta = 0;
+  lastDotTime = null;
+  globalId = 0; // unique id for each dot
+  // this is not part of state so it is synchronously updated
+
   dispatch = (action) => {
     this.setState(prevState => reducer(prevState, action));
   };
-
-  // actions to be passed as props
   togglePlay = () => (this.state.playing ? this.pauseGame() : this.startGame());
   captureDot = (id) => {
     this.dispatch({ type: 'DOT_CAPTURED', id });
@@ -47,14 +52,14 @@ class App extends Component {
   updateGameSpeed = (speed) => {
     this.dispatch({ type: 'GAME_SPEED_UPDATED', speed });
   };
-
-  // local actions
   startGame = () => {
-    this.gameInterval = setInterval(() => this.updateGame(), 1000 / FRAMES_PER_SECOND);
+    this.lastTime = new Date().getTime();
+    this.lastDotTime = this.lastTime;
+    this.updateGame();
     this.dispatch({ type: 'GAME_STARTED' });
   };
   pauseGame = () => {
-    clearInterval(this.gameInterval);
+    global.cancelAnimationFrame(this.frameId);
     this.dispatch({ type: 'GAME_PAUSED' });
   };
   addDot = () => {
@@ -81,11 +86,17 @@ class App extends Component {
   };
   // core game-loop is here
   updateGame = () => {
-    this.dispatch({ type: 'ADVANCE_DOTS' });
-    if ((this.frameCount * dotsPerSecond) % FRAMES_PER_SECOND === 0) {
+    this.frameId = global.requestAnimationFrame(this.updateGame);
+    this.currentTime = new Date().getTime();
+    this.delta = (this.currentTime - this.lastTime) / 1000;
+
+    this.dispatch({ type: 'ADVANCE_DOTS', delta: this.delta });
+
+    if (this.currentTime - this.lastDotTime > 1000 / dotsPerSecond) {
       this.addDot();
+      this.lastDotTime = this.currentTime;
     }
-    this.frameCount += 1;
+    this.lastTime = this.currentTime;
   };
   render() {
     return (
