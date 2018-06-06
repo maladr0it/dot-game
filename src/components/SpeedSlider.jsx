@@ -44,7 +44,7 @@ const StyledSlider = styled.input`
     user-select: none;
     width: 100%;
     height: 0.1rem;
-    background: ${Theme.pastelGreen};
+    background: ${Theme.pastelYellow};
   }
   &[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
